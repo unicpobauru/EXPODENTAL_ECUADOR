@@ -42,7 +42,10 @@ export function About() {
               className="aspect-[4/5] w-full rounded-3xl object-cover sm:aspect-video lg:aspect-[4/5]"
               style={{ background: "linear-gradient(150deg, #0b1b33 0%, #001360 60%, #050b16 100%)" }}
               onError={(e) => {
-                (e.currentTarget as HTMLImageElement).style.visibility = "hidden";
+                const img = e.currentTarget as HTMLImageElement;
+                img.onerror = null;
+                img.src =
+                  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5'/%3E";
               }}
             />
           </Reveal>

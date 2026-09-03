@@ -73,7 +73,7 @@ function Decorations() {
 
 export function Hero() {
   return (
-    <section id="inicio" className="relative min-h-[100svh] overflow-hidden bg-ink">
+    <section id="inicio" className="relative min-h-[600px] overflow-hidden bg-ink sm:min-h-[92svh] lg:min-h-[720px]">
       {/* fondo: degradado azul + foto de graduados */}
       <div className="absolute inset-0 z-0">
         <div
@@ -107,7 +107,7 @@ export function Hero() {
 
       <Decorations />
 
-      <Container className="relative z-10 flex min-h-[100svh] flex-col justify-center py-24 sm:py-28">
+      <Container className="relative z-10 flex min-h-[600px] flex-col justify-center py-24 pt-28 sm:min-h-[92svh] sm:py-28 sm:pt-32 lg:min-h-[720px]">
         <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
           {/* columna de texto */}
           <div className="flex max-w-[600px] flex-col gap-6">

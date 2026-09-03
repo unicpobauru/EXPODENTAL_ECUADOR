@@ -5,14 +5,14 @@ import { FORM_HREF } from "../lib/cta";
 export function Footer() {
   return (
     <footer
-      className="pt-14 text-white/70"
+      className="pt-12 text-white/70"
       style={{
         background:
           "radial-gradient(120% 160% at 50% 0%, #1c56b8 0%, #123a86 34%, #0a1f4a 68%, #07173a 100%)",
       }}
     >
       <Container>
-        <div className="flex flex-col items-center gap-6 border-b border-white/10 pb-12 text-center">
+        <div className="flex flex-col items-center gap-5 border-b border-white/10 pb-10 text-center">
           <img src="images/logo-unicpo.png" alt="Faculdade UniCPO" className="h-9 w-auto" />
           <p className="max-w-[440px] text-[13.5px] leading-relaxed text-white/55">
             El conocimiento que transforma tu carrera. Formación especializada, experiencia
@@ -35,7 +35,7 @@ export function Footer() {
           />
         </div>
 
-        <div className="flex flex-col items-center justify-between gap-3 py-7 text-center text-[12px] text-white/35 sm:flex-row sm:text-left">
+        <div className="flex flex-col items-center justify-between gap-3 py-6 text-center text-[12px] text-white/40 sm:flex-row sm:text-left">
           <p>Faculdade UniCPO · CPO Ecuador — Copyright {new Date().getFullYear()}. Todos los derechos reservados.</p>
           <a href="#" className="underline-offset-4 hover:underline">Política de Privacidad</a>
         </div>

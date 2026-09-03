@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+
+  /* Core palette — MPA (Medical Performance Academy) brand: near-black navy + gold */
+  --color-ink: #0b1b33;
+  --color-ink-800: #001360;
+  --color-ink-900: #050b16;
+  --color-paper: #ffffff;
+  --color-soft: #f2f4f8;
+  --color-soft-200: #e2e6ee;
+  --color-line: #e2e6ee;
+
+  --color-gold-50: #faf5e6;
+  --color-gold-200: #ecd98f;
+  --color-gold-400: #d4af37;
+  --color-gold-500: #c6a23a;
+  --color-gold-600: #93731f;
+  --color-gold-700: #6e5518;
+
+  --shadow-card: 0 1px 2px rgba(5, 11, 22, 0.06), 0 12px 32px -12px rgba(5, 11, 22, 0.18);
+  --shadow-card-hover: 0 4px 10px rgba(5, 11, 22, 0.09), 0 24px 48px -16px rgba(5, 11, 22, 0.28);
+  --shadow-panel: 0 30px 80px -24px rgba(5, 11, 22, 0.5);
+
+  --animate-marquee: marquee 32s linear infinite;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-paper text-ink antialiased;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-gold-200);
+    color: var(--color-ink);
+  }
+}
+
+@layer utilities {
+  .container-xl {
+    @apply mx-auto w-full max-w-[1216px] px-6 sm:px-8 lg:px-10;
+  }
+
+  .container-lg {
+    @apply mx-auto w-full max-w-[980px] px-6 sm:px-8;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-[11px] sm:text-xs font-semibold uppercase tracking-[0.22em] text-gold-600;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+
+.reveal.is-visible {
+  animation: reveal-up 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.accordion-content {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease;
+}
+
+.accordion-content.is-open {
+  grid-template-rows: 1fr;
+}
+
+.accordion-content > div {
+  overflow: hidden;
+}

@@ -1,5 +1,12 @@
+import { Check } from "lucide-react";
 import { Container } from "../components/ui/Container";
 import { LeadForm } from "../components/ui/LeadForm";
+
+const heroPoints = [
+  "Nuevos conocimientos, nuevas posibilidades para tu carrera",
+  "Sorteo de becas para estudiar en Brasil y Ecuador",
+  "Registro rápido y gratis — solo tus datos",
+];
 
 /**
  * Capa decorativa inspirada en las artes de la campaña UniCPO Ecuador:
@@ -115,10 +122,16 @@ export function Hero() {
               Inscríbete y participa en el sorteo de{" "}
               <span className="text-brand-300">becas para estudiar en Brasil y Ecuador</span>.
             </h1>
-            <p className="max-w-[460px] text-[15px] leading-relaxed text-white/80 sm:text-lg">
-              Nuevos conocimientos, nuevas posibilidades para tu carrera. Déjanos tus datos y
-              entrá en el sorteo — es rápido y gratis.
-            </p>
+            <ul className="flex flex-col gap-3">
+              {heroPoints.map((point) => (
+                <li key={point} className="flex items-start gap-3">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-400 text-ink">
+                    <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                  </span>
+                  <span className="text-[15px] leading-snug text-white/85 sm:text-base">{point}</span>
+                </li>
+              ))}
+            </ul>
             <p className="text-[12.5px] font-medium uppercase tracking-[0.14em] text-white/45">
               Faculdade UniCPO · CPO Ecuador · FAINTER
             </p>

@@ -4,7 +4,13 @@ import { FORM_HREF } from "../lib/cta";
 
 export function Footer() {
   return (
-    <footer className="bg-ink-900 pt-14 text-white/70">
+    <footer
+      className="pt-14 text-white/70"
+      style={{
+        background:
+          "radial-gradient(120% 160% at 50% 0%, #1c56b8 0%, #123a86 34%, #0a1f4a 68%, #07173a 100%)",
+      }}
+    >
       <Container>
         <div className="flex flex-col items-center gap-6 border-b border-white/10 pb-12 text-center">
           <img src="images/logo-unicpo.png" alt="Faculdade UniCPO" className="h-9 w-auto" />
@@ -20,9 +26,9 @@ export function Footer() {
             Quiero participar del sorteo
           </a>
           <img
-            src="images/cobrand-cpo-fainter.jpg"
+            src="images/cobrand-cpo-fainter.png"
             alt="CPO Ecuador · FAINTER"
-            className="mt-2 h-12 w-auto rounded opacity-90"
+            className="mt-2 h-11 w-auto opacity-95"
             onError={(e) => {
               (e.currentTarget as HTMLImageElement).style.display = "none";
             }}

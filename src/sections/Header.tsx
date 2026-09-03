@@ -1,99 +1,26 @@
-import { FORM_HREF } from "../lib/cta";
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
 import { Container } from "../components/ui/Container";
-import { Button } from "../components/ui/Button";
-import { navLinks } from "../data/nav";
 import { useScrolled } from "../hooks/useScrolled";
-
-/** Marca textual provisoria. TODO: reemplazar por el logo de Expodental Ecuador. */
-function Wordmark({ solid }: { solid: boolean }) {
-  return (
-    <span
-      className={`text-[15px] font-extrabold uppercase tracking-[0.14em] lg:text-base ${
-        solid ? "text-ink" : "text-white"
-      }`}
-    >
-      Expodental <span className="text-gold-500">Ecuador</span>
-    </span>
-  );
-}
 
 export function Header() {
   const scrolled = useScrolled(40);
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  const solid = scrolled || menuOpen;
 
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        solid ? "bg-paper/95 shadow-[0_1px_0_rgba(11,27,51,0.08)] backdrop-blur-md" : "bg-transparent"
+        scrolled ? "bg-ink-900/90 shadow-[0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-md" : "bg-transparent"
       }`}
     >
       <Container>
-        <div className="flex h-[76px] items-center justify-between lg:h-[88px]">
-          <a href="#inicio" className="flex items-center" onClick={() => setMenuOpen(false)}>
-            <Wordmark solid={solid} />
+        <div className="flex h-[72px] items-center lg:h-[84px]">
+          <a href="#inicio" className="flex items-center">
+            <img
+              src="images/logo-unicpo.png"
+              alt="Faculdade UniCPO"
+              className="h-8 w-auto lg:h-9"
+            />
           </a>
-
-          <nav className="hidden items-center gap-8 lg:flex">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className={`text-[13px] font-medium uppercase tracking-[0.06em] transition-colors duration-300 hover:text-gold-600 ${
-                  solid ? "text-ink/80" : "text-white/85"
-                }`}
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
-
-          <div className="hidden lg:block">
-            <Button href={FORM_HREF} variant="primary" size="md">
-              Registrarme
-            </Button>
-          </div>
-
-          <button
-            type="button"
-            className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors lg:hidden ${
-              solid ? "text-ink" : "text-white"
-            }`}
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
-            aria-expanded={menuOpen}
-          >
-            {menuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
         </div>
       </Container>
-
-      <div
-        className={`overflow-hidden bg-paper transition-[max-height,opacity] duration-300 ease-out lg:hidden ${
-          menuOpen ? "max-h-[420px] opacity-100" : "max-h-0 opacity-0"
-        }`}
-      >
-        <Container>
-          <nav className="flex flex-col gap-1 pb-6 pt-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMenuOpen(false)}
-                className="rounded-lg px-2 py-3 text-[15px] font-medium text-ink/80 transition-colors hover:bg-soft hover:text-gold-600"
-              >
-                {link.label}
-              </a>
-            ))}
-            <Button href={FORM_HREF} variant="primary" size="md" className="mt-3 w-full" onClick={() => setMenuOpen(false)}>
-              Registrarme
-            </Button>
-          </nav>
-        </Container>
-      </div>
     </header>
   );
 }

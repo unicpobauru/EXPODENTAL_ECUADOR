@@ -3,16 +3,16 @@
  * Al enviar, hace un POST al Web App de Google Apps Script, que escribe
  * una fila en la Hoja de cálculo de Google.
  *
- * TODO: pegar aquí la URL de implementación ("Web app") del Apps Script
- * de Expodental Ecuador. Mientras sea null, el formulario funciona en la
- * interfaz (muestra "registro recibido") pero NO envía datos a ningún lado.
+ * Si se pone en null, el formulario funciona en la interfaz (muestra
+ * "registro recibido") pero NO envía datos a ningún lado.
  */
 
 /** URL de implementación ("Web app") del Google Apps Script del cliente. */
-export const GOOGLE_SCRIPT_URL: string | null = null;
+export const GOOGLE_SCRIPT_URL: string | null =
+  "https://script.google.com/macros/s/AKfycbzElfLuW-ioK-GMspJ7FqMvtc4e3h5aQDa60hbYCCLzNPBSZwOEFmqcRae9SgD4vi0r5Q/exec";
 
 /** Etiqueta fija que viaja en CADA fila (columna "Tag"), fuera del formulario. */
-const LEAD_TAG = "[LP-EXPODENTAL-EC]";
+const LEAD_TAG = "[LP-SORTEO-BECAS-EC]";
 
 export interface LeadFormData {
   nome: string;

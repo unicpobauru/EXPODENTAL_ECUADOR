@@ -51,9 +51,10 @@ export function LeadForm() {
     return (
       <div className="flex w-full flex-col items-center gap-3 rounded-2xl border border-gold-400/30 bg-white/[0.05] px-6 py-8 text-center">
         <CheckCircle2 className="h-9 w-9 text-gold-400" strokeWidth={2} />
-        <p className="text-[15px] font-bold text-white">¡Registro recibido!</p>
+        <p className="text-[15px] font-bold text-white">¡Ya estás participando!</p>
         <p className="max-w-xs text-[13px] leading-relaxed text-white/65">
-          Te enviamos la confirmación y los detalles de acceso por correo.
+          Registramos tus datos para el sorteo de becas. Te contactamos si resultás
+          seleccionado/a.
         </p>
       </div>
     );
@@ -134,7 +135,7 @@ export function LeadForm() {
         className="mt-1 flex items-center justify-center gap-2 rounded-full bg-gold-500 px-6 py-3.5 text-[13px] font-bold uppercase tracking-[0.08em] text-white transition-all duration-300 hover:-translate-y-0.5 hover:bg-gold-600 disabled:pointer-events-none disabled:opacity-60"
       >
         {submitting && <Loader2 className="h-4 w-4 animate-spin" strokeWidth={2.5} />}
-        Registrarme
+        Quiero participar
       </button>
     </form>
   );

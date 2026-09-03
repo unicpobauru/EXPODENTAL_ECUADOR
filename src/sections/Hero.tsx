@@ -1,100 +1,150 @@
-import { FORM_HREF } from "../lib/cta";
-import { CheckCircle2 } from "lucide-react";
 import { Container } from "../components/ui/Container";
-import { Button } from "../components/ui/Button";
 import { LeadForm } from "../components/ui/LeadForm";
-import { trustPoints } from "../data/trustPoints";
+
+/**
+ * Capa decorativa inspirada en las artes de la campaña UniCPO Ecuador:
+ * marco de marcas de registro, chevrons, cuatrifolio, círculo cian con
+ * trama de puntos y líneas punteadas. Puramente estético.
+ */
+function Decorations() {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-[1] overflow-hidden" aria-hidden>
+      {/* marco tipo marcas de imprenta */}
+      <div className="absolute inset-3 rounded-[2px] border border-white/15 sm:inset-4" />
+      <div className="absolute left-3 top-3 h-4 w-px bg-white/30 sm:left-4 sm:top-4" />
+      <div className="absolute left-3 top-3 h-px w-4 bg-white/30 sm:left-4 sm:top-4" />
+      <div className="absolute right-3 top-3 h-4 w-px bg-white/30 sm:right-4 sm:top-4" />
+      <div className="absolute right-3 top-3 h-px w-4 bg-white/30 sm:right-4 sm:top-4" />
+      <div className="absolute bottom-3 left-3 h-4 w-px bg-white/30 sm:bottom-4 sm:left-4" />
+      <div className="absolute bottom-3 left-3 h-px w-4 bg-white/30 sm:bottom-4 sm:left-4" />
+      <div className="absolute bottom-3 right-3 h-4 w-px bg-white/30 sm:bottom-4 sm:right-4" />
+      <div className="absolute bottom-3 right-3 h-px w-4 bg-white/30 sm:bottom-4 sm:right-4" />
+
+      {/* chevrons arriba a la derecha */}
+      <svg className="absolute right-8 top-8 h-8 w-24 text-white/60 sm:right-12 sm:top-10" viewBox="0 0 96 32" fill="none">
+        {[0, 16, 32, 48, 64].map((x) => (
+          <path key={x} d={`M${x} 6 L${x + 12} 16 L${x} 26`} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        ))}
+      </svg>
+
+      {/* cuatrifolio contorno, izquierda */}
+      <svg className="absolute left-10 top-[42%] hidden h-12 w-12 text-white/35 sm:block" viewBox="0 0 40 40" fill="none">
+        <path
+          d="M20 4c-3 0-5 2-6 5-3-1-6 0-8 2s-3 5-2 8c-3 1-5 3-5 6s2 5 5 6c-1 3 0 6 2 8s5 3 8 2c1 3 3 5 6 5s5-2 6-5c3 1 6 0 8-2s3-5 2-8c3-1 5-3 5-6s-2-5-5-6c1-3 0-6-2-8s-5-3-8-2c-1-3-3-5-6-5Z"
+          stroke="currentColor"
+          strokeWidth="1.6"
+        />
+      </svg>
+
+      {/* líneas punteadas, borde derecho */}
+      <svg className="absolute right-10 top-1/2 hidden h-40 w-4 -translate-y-1/2 text-white/35 lg:block" viewBox="0 0 16 160" fill="currentColor">
+        {Array.from({ length: 16 }).map((_, i) => (
+          <g key={i}>
+            <circle cx={4} cy={i * 10 + 4} r={1.5} />
+            <circle cx={12} cy={i * 10 + 4} r={1.5} />
+          </g>
+        ))}
+      </svg>
+
+      {/* círculo cian con trama de puntos + doble chevron */}
+      <div className="absolute -bottom-36 -left-36 h-64 w-64 rounded-full bg-brand-400 sm:h-72 sm:w-72">
+        <svg className="absolute right-2 top-6 h-24 w-24 text-white/70" viewBox="0 0 96 96" fill="currentColor">
+          {Array.from({ length: 7 }).map((_, r) =>
+            Array.from({ length: 7 }).map((_, c) => (
+              <circle key={`${r}-${c}`} cx={8 + c * 13} cy={8 + r * 13} r={2.2} opacity={1 - (r + c) / 16} />
+            )),
+          )}
+        </svg>
+        <svg className="absolute right-10 top-1/2 h-10 w-14 -translate-y-1/2 text-white" viewBox="0 0 56 40" fill="none">
+          <path d="M6 6 L22 20 L6 34" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M24 6 L40 20 L24 34" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </div>
+    </div>
+  );
+}
 
 export function Hero() {
   return (
-    <section id="inicio" className="relative bg-ink">
-      <div className="relative flex min-h-[640px] items-center overflow-hidden bg-ink sm:min-h-[720px] lg:min-h-[820px]">
-        <div className="absolute inset-0">
-          {/* TODO: reemplazar por una foto real del evento en public/images/hero.jpg */}
-          <img
-            src="images/hero.jpg"
-            alt="Expodental Ecuador — feria internacional de odontología"
-            className="h-full w-full object-cover object-center"
-            onError={(e) => {
-              (e.currentTarget as HTMLImageElement).style.display = "none";
-            }}
-          />
-          <div
-            className="absolute inset-0"
-            style={{
-              background:
-                "linear-gradient(180deg, rgba(5,11,22,0.72) 0%, rgba(5,11,22,0.6) 45%, rgba(5,11,22,0.94) 100%)",
-            }}
-          />
-        </div>
+    <section id="inicio" className="relative min-h-[100svh] overflow-hidden bg-ink">
+      {/* fondo: degradado azul + foto de graduados */}
+      <div className="absolute inset-0 z-0">
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(120% 100% at 22% 35%, #1c56b8 0%, #123a86 38%, #0a1f4a 68%, #07173a 100%)",
+          }}
+        />
+        <img
+          src="images/hero-people.jpg"
+          alt="Graduados de la Faculdade UniCPO celebrando"
+          className="absolute right-0 top-0 h-full w-full object-cover object-[72%_20%] opacity-40 sm:w-[62%] sm:opacity-60 lg:w-[54%]"
+          onError={(e) => {
+            (e.currentTarget as HTMLImageElement).style.display = "none";
+          }}
+        />
+        {/* difuminado de la foto hacia el azul */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "linear-gradient(90deg, #0a1f4a 0%, rgba(10,31,74,0.85) 34%, rgba(10,31,74,0.35) 60%, rgba(10,31,74,0.25) 100%)",
+          }}
+        />
+        <div
+          className="absolute inset-0 sm:hidden"
+          style={{ background: "linear-gradient(180deg, rgba(7,23,58,0.55) 0%, rgba(7,23,58,0.9) 100%)" }}
+        />
+      </div>
 
-        <Container className="relative z-10 pb-32 pt-32 sm:pt-40 lg:pb-48 lg:pt-44">
-          <div className="mx-auto flex max-w-[760px] flex-col items-center gap-6 text-center [text-shadow:0_1px_12px_rgba(5,11,22,0.5)]">
-            <span className="eyebrow text-white/80">
-              <span className="h-px w-6 bg-gold-400" aria-hidden />
-              Feria Internacional de Odontología
+      <Decorations />
+
+      <Container className="relative z-10 flex min-h-[100svh] flex-col justify-center py-24 sm:py-28">
+        <div className="grid items-center gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
+          {/* columna de texto */}
+          <div className="flex max-w-[600px] flex-col gap-6">
+            <span className="eyebrow">
+              <span className="h-px w-6 bg-brand-400" aria-hidden />
+              Faculdade UniCPO · Expodental Ecuador
             </span>
             <h1
-              className="text-balance font-extrabold leading-[1.08] tracking-[-0.02em] text-white"
-              style={{ fontSize: "clamp(2.25rem, 1.6rem + 3vw, 3.75rem)" }}
+              className="text-balance font-extrabold leading-[1.06] tracking-[-0.02em] text-white [text-shadow:0_2px_18px_rgba(4,10,30,0.45)]"
+              style={{ fontSize: "clamp(1.95rem, 1.35rem + 2.9vw, 3.4rem)" }}
             >
-              Expodental Ecuador
+              Inscríbete y participa en el sorteo de{" "}
+              <span className="text-brand-300">becas para estudiar en Brasil y Ecuador</span>.
             </h1>
-            <p className="max-w-[560px] text-[16px] leading-relaxed text-white/75 sm:text-lg">
-              Congreso científico, exposición comercial y networking para todo el sector dental.
-              <br />
-              [Fecha] · [Sede], Ecuador.
+            <p className="max-w-[460px] text-[15px] leading-relaxed text-white/80 sm:text-lg">
+              Nuevos conocimientos, nuevas posibilidades para tu carrera. Déjanos tus datos y
+              entrá en el sorteo — es rápido y gratis.
             </p>
-
-            <Button href={FORM_HREF} variant="primary" size="lg" className="mt-2">
-              Registrarme gratis
-            </Button>
-            <span className="text-[12px] text-white/50">Cupos limitados — registro anticipado</span>
+            <p className="text-[12.5px] font-medium uppercase tracking-[0.14em] text-white/45">
+              Faculdade UniCPO · CPO Ecuador · FAINTER
+            </p>
           </div>
-        </Container>
-      </div>
 
-      <div className="relative z-20 px-6 sm:px-8 lg:px-10">
-        <Container className="!px-0">
-          <div className="-mt-20 grid gap-0 overflow-hidden rounded-3xl bg-ink shadow-panel sm:-mt-24 lg:-mt-28 lg:grid-cols-[1.1fr_1fr]">
-            <div className="flex flex-col justify-center gap-6 p-8 sm:p-10 lg:p-14">
-              <span className="eyebrow text-white/70">
-                <span className="h-px w-6 bg-gold-400" aria-hidden />
-                Expodental Ecuador
+          {/* tarjeta de formulario */}
+          <div
+            id="formulario"
+            className="w-full max-w-[440px] scroll-mt-24 justify-self-center rounded-3xl border border-white/12 bg-[#0b1c40]/85 p-6 shadow-panel backdrop-blur-md sm:p-8 lg:justify-self-end"
+          >
+            <div className="mb-4 flex flex-col gap-1.5 text-center">
+              <span className="eyebrow justify-center">
+                <span className="h-px w-6 bg-brand-400" aria-hidden />
+                Registro
               </span>
-              <h2 className="text-balance text-2xl font-extrabold leading-tight text-white sm:text-3xl">
-                Lo que vas a encontrar
+              <h2 className="text-xl font-extrabold leading-tight text-white sm:text-2xl">
+                Participá del sorteo
               </h2>
-              <ul className="flex flex-col gap-3.5">
-                {trustPoints.map((point) => (
-                  <li key={point} className="flex items-start gap-3 text-[14.5px] leading-snug text-white/80">
-                    <CheckCircle2 className="mt-0.5 h-[18px] w-[18px] shrink-0 text-gold-400" strokeWidth={2} />
-                    {point}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div
-              id="formulario"
-              className="flex scroll-mt-24 flex-col items-center gap-4 border-t border-white/10 bg-white/[0.03] p-8 text-center sm:p-10 lg:border-l lg:border-t-0 lg:p-12"
-            >
-              <span className="eyebrow text-white/70">
-                <span className="h-px w-6 bg-gold-400" aria-hidden />
-                Registro abierto
-              </span>
-              <h3 className="text-2xl font-extrabold leading-tight text-white sm:text-3xl">
-                Asegurá tu lugar
-              </h3>
-              <p className="max-w-xs text-[13.5px] leading-relaxed text-white/70">
-                Dejá tus datos y te enviamos la confirmación, la agenda y los detalles de acceso.
+              <p className="text-[13px] leading-relaxed text-white/65">
+                Completá tus datos para entrar en el sorteo de becas.
               </p>
-              <LeadForm />
-              <span className="text-[11px] text-white/40">Cupos limitados</span>
             </div>
+            <LeadForm />
           </div>
-        </Container>
-      </div>
+        </div>
+      </Container>
     </section>
   );
 }

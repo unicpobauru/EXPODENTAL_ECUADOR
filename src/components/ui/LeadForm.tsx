@@ -38,7 +38,9 @@ export function LeadForm() {
     setSubmitting(true);
     const data: LeadFormData = {
       nome: nome.trim(),
-      telefone: `+${country.dial} ${telefone.trim()}`,
+      // Formato "(+55) 11 9...": NO empieza con "+", así Google Sheets no lo
+      // interpreta como fórmula (eso causaba #ERROR! en la columna Telefone).
+      telefone: `(+${country.dial}) ${telefone.trim()}`,
       email: email.trim(),
       medico,
       pais: `${country.name} (+${country.dial})`,

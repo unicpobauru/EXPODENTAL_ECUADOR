@@ -34,15 +34,6 @@ function Decorations() {
         ))}
       </svg>
 
-      {/* cuatrifolio contorno, izquierda */}
-      <svg className="absolute left-10 top-[42%] hidden h-12 w-12 text-white/35 sm:block" viewBox="0 0 40 40" fill="none">
-        <path
-          d="M20 4c-3 0-5 2-6 5-3-1-6 0-8 2s-3 5-2 8c-3 1-5 3-5 6s2 5 5 6c-1 3 0 6 2 8s5 3 8 2c1 3 3 5 6 5s5-2 6-5c3 1 6 0 8-2s3-5 2-8c3-1 5-3 5-6s-2-5-5-6c1-3 0-6-2-8s-5-3-8-2c-1-3-3-5-6-5Z"
-          stroke="currentColor"
-          strokeWidth="1.6"
-        />
-      </svg>
-
       {/* líneas punteadas, borde derecho */}
       <svg className="absolute right-10 top-1/2 hidden h-40 w-4 -translate-y-1/2 text-white/35 lg:block" viewBox="0 0 16 160" fill="currentColor">
         {Array.from({ length: 16 }).map((_, i) => (

@@ -1,10 +1,10 @@
 /**
- * Formulario propio de registro de Expodental Ecuador (sin terceros).
+ * Formulario propio de registro (sin terceros).
  * Al enviar, hace un POST al Web App de Google Apps Script, que escribe
  * una fila en la Hoja de cálculo de Google.
  *
- * Si se pone en null, el formulario funciona en la interfaz (muestra
- * "registro recibido") pero NO envía datos a ningún lado.
+ * Si GOOGLE_SCRIPT_URL se pone en null, el formulario funciona en la
+ * interfaz (muestra "registro recibido") pero NO envía datos a ningún lado.
  */
 
 /** URL de implementación ("Web app") del Google Apps Script del cliente. */
@@ -14,12 +14,25 @@ export const GOOGLE_SCRIPT_URL: string | null =
 /** Etiqueta fija que viaja en CADA fila (columna "Tag"), fuera del formulario. */
 const LEAD_TAG = "[LP-SORTEO-BECAS-EC]";
 
+/** Texto que va a la columna "Origem" de la planilla. */
+const ORIGEN = "LP Sorteo Becas UniCPO";
+
+/**
+ * Valor por defecto para la columna "País (DDI)".
+ * El formulario no pide país (evento presencial en Ecuador), así que se
+ * manda este valor fijo. Si en el futuro se agrega un selector de país,
+ * pasar el valor elegido por `data.pais` y se usa ese en su lugar.
+ */
+const PAIS_DEFAULT = "Ecuador (+593)";
+
 export interface LeadFormData {
   nome: string;
   telefone: string;
   email: string;
   /** "Sí" | "No" — si la persona es odontóloga. */
   medico: string;
+  /** Opcional — país / DDI. Si no viene, se usa PAIS_DEFAULT. */
+  pais?: string;
 }
 
 /** Fecha en formato local (DD-MM-AAAA HH:mm:ss, 24h, zona de Ecuador). */
@@ -39,6 +52,11 @@ function formatFecha(date: Date): string {
   return `${get("day")}-${get("month")}-${get("year")} ${hour}:${get("minute")}:${get("second")}`;
 }
 
+/** Asigna `value` a TODAS las claves de `keys` dentro de `target`. */
+function put(target: Record<string, string>, keys: string[], value: string): void {
+  for (const k of keys) target[k] = value;
+}
+
 /**
  * Envía los datos a la Hoja de cálculo de Google.
  *
@@ -46,44 +64,33 @@ function formatFecha(date: Date): string {
  * caen en `e.parameter` del Apps Script. Ese Content-Type es
  * "CORS-safelisted", por lo que NO dispara preflight.
  *
- * Cada valor se envía bajo VARIAS claves (ES / variaciones de mayúsculas)
- * para caer en la columna correcta sea cual sea el nombre esperado.
+ * Cada valor se manda bajo MUCHAS claves (portugués, español, camelCase y
+ * el texto exacto del encabezado) para caer en la columna correcta sea
+ * cual sea el nombre de parámetro que espera el script de la planilla.
  */
 export function logToGoogleSheet(data: LeadFormData): void {
   if (!GOOGLE_SCRIPT_URL) return;
 
   const fecha = formatFecha(new Date());
-  const fields: Record<string, string> = {
-    nombre: data.nome,
-    Nombre: data.nome,
-    nombreCompleto: data.nome,
-    nombre_completo: data.nome,
-    name: data.nome,
+  const pais = data.pais && data.pais.trim() ? data.pais.trim() : PAIS_DEFAULT;
+  const fields: Record<string, string> = {};
 
-    telefono: data.telefone,
-    Telefono: data.telefone,
-    celular: data.telefone,
-    whatsapp: data.telefone,
-    phone: data.telefone,
-
-    email: data.email,
-    Email: data.email,
-    correo: data.email,
-
-    odontologo: data.medico,
-    esOdontologo: data.medico,
-
-    origen: "site",
-    Origen: "site",
-    tag: LEAD_TAG,
-    Tag: LEAD_TAG,
-
-    fecha: fecha,
-    Fecha: fecha,
-    fechaHora: fecha,
-    timestamp: fecha,
-    date: fecha,
-  };
+  // Nome
+  put(fields, ["nome", "Nome", "nomeCompleto", "nome_completo", "nombre", "Nombre", "nombreCompleto", "name", "fullName"], data.nome);
+  // Telefone / WhatsApp
+  put(fields, ["telefone", "Telefone", "celular", "whatsapp", "WhatsApp", "telefono", "Telefono", "phone", "tel"], data.telefone);
+  // País (DDI)
+  put(fields, ["pais", "Pais", "país", "País", "paisDDI", "País (DDI)", "pais_ddi", "ddi", "DDI", "codigoPais", "countryCode", "country"], pais);
+  // E-mail
+  put(fields, ["email", "Email", "e-mail", "E-mail", "correo", "mail"], data.email);
+  // É odontólogo
+  put(fields, ["odontologo", "Odontologo", "ehOdontologo", "eOdontologo", "É odontólogo", "esOdontologo", "dentista", "isDentist"], data.medico);
+  // Origem
+  put(fields, ["origem", "Origem", "origen", "Origen", "fonte", "source", "canal"], ORIGEN);
+  // Data/Hora
+  put(fields, ["data", "Data", "dataHora", "Data/Hora", "fecha", "Fecha", "fechaHora", "timestamp", "date"], fecha);
+  // Tag (fuera del formulario)
+  put(fields, ["tag", "Tag", "etiqueta"], LEAD_TAG);
 
   fetch(GOOGLE_SCRIPT_URL, {
     method: "POST",

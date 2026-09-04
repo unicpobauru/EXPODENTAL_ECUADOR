@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from "react";
 import { Loader2, CheckCircle2 } from "lucide-react";
 import { logToGoogleSheet, type LeadFormData } from "../../lib/leadForm";
+import { PhoneField } from "./PhoneField";
+import { countries, DEFAULT_COUNTRY, type Country } from "../../data/countries";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -11,6 +13,9 @@ const labelClass = "text-left text-[12.5px] font-semibold text-white/70";
 export function LeadForm() {
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
+  const [country, setCountry] = useState<Country>(
+    () => countries.find((c) => c.code === DEFAULT_COUNTRY) ?? countries[0],
+  );
   const [email, setEmail] = useState("");
   const [medico, setMedico] = useState<"Sí" | "No" | "">("");
   const [error, setError] = useState<string | null>(null);
@@ -33,9 +38,10 @@ export function LeadForm() {
     setSubmitting(true);
     const data: LeadFormData = {
       nome: nome.trim(),
-      telefone: telefone.trim(),
+      telefone: `+${country.dial} ${telefone.trim()}`,
       email: email.trim(),
       medico,
+      pais: `${country.name} (+${country.dial})`,
     };
     logToGoogleSheet(data);
 
@@ -81,14 +87,13 @@ export function LeadForm() {
         <label className={labelClass} htmlFor="lead-telefone">
           Teléfono / WhatsApp
         </label>
-        <input
+        <PhoneField
           id="lead-telefone"
-          type="tel"
-          autoComplete="tel"
           value={telefone}
-          onChange={(e) => setTelefone(e.target.value)}
-          className={inputClass}
-          placeholder="09 1234 5678"
+          onChange={setTelefone}
+          country={country}
+          onCountryChange={setCountry}
+          placeholder="99 123 4567"
         />
       </div>
 

@@ -48,7 +48,7 @@ npm run deploy     # build + publica en gh-pages  (GitHub Pages ~1 min en actual
 | Archivo | Uso |
 |---|---|
 | `logo-unicpo.png` | logo blanco (header y footer) |
-| `hero-people.jpg` | foto de graduados, fondo derecho del Hero |
+| `hero-people.jpg` | foto de graduados — sin usar (el Hero es solo degradado azul) |
 | `hero-grad.jpg` | alternativa (graduada con diploma), sin usar |
 | `cobrand-cpo-fainter.jpg` | franja CPO Ecuador + FAINTER (footer) |
 

@@ -16,7 +16,7 @@ export function Header() {
             <img
               src="images/logo-unicpo.png"
               alt="Faculdade UniCPO"
-              className="h-8 w-auto lg:h-9"
+              className="h-10 w-auto lg:h-11"
             />
           </a>
         </div>

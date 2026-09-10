@@ -65,7 +65,7 @@ function Decorations() {
 export function Hero() {
   return (
     <section id="inicio" className="relative min-h-[600px] overflow-hidden bg-ink sm:min-h-[92svh] lg:min-h-[720px]">
-      {/* fondo: degradado azul + foto de graduados */}
+      {/* fondo: solo degradado azul */}
       <div className="absolute inset-0 z-0">
         <div
           className="absolute inset-0"
@@ -73,26 +73,6 @@ export function Hero() {
             background:
               "radial-gradient(120% 100% at 22% 35%, #1c56b8 0%, #123a86 38%, #0a1f4a 68%, #07173a 100%)",
           }}
-        />
-        <img
-          src="images/hero-people.jpg"
-          alt="Graduados de la Faculdade UniCPO celebrando"
-          className="absolute right-0 top-0 h-full w-full object-cover object-[72%_20%] opacity-40 sm:w-[62%] sm:opacity-60 lg:w-[54%]"
-          onError={(e) => {
-            (e.currentTarget as HTMLImageElement).style.display = "none";
-          }}
-        />
-        {/* difuminado de la foto hacia el azul */}
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(90deg, #0a1f4a 0%, rgba(10,31,74,0.85) 34%, rgba(10,31,74,0.35) 60%, rgba(10,31,74,0.25) 100%)",
-          }}
-        />
-        <div
-          className="absolute inset-0 sm:hidden"
-          style={{ background: "linear-gradient(180deg, rgba(7,23,58,0.55) 0%, rgba(7,23,58,0.9) 100%)" }}
         />
       </div>
 

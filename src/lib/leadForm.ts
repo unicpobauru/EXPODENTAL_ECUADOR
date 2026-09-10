@@ -13,13 +13,14 @@
 
 /**
  * URL de implementación ("Web app", termina en `/exec`) del Apps Script de
- * la planilla NUEVA del sorteo. Mientras esté en `null`, el formulario no
- * envía nada — pegar aquí la URL cuando la implementación esté hecha.
+ * la planilla NUEVA del sorteo (script en `apps-script/Code.gs`).
+ * Si se pone en `null`, el formulario no envía nada (solo UI).
  *
  * Planilla anterior (ya no se usa):
  * "https://script.google.com/macros/s/AKfycbzElfLuW-ioK-GMspJ7FqMvtc4e3h5aQDa60hbYCCLzNPBSZwOEFmqcRae9SgD4vi0r5Q/exec"
  */
-export const GOOGLE_SCRIPT_URL: string | null = null;
+export const GOOGLE_SCRIPT_URL: string | null =
+  "https://script.google.com/macros/s/AKfycbyg76h6P17eY7hGk52aBrVr-ofvNkq09LhYZ9OAUNCn5edkmpYaRViyu7-futhNb28/exec";
 
 /** Etiqueta fija que viaja en CADA fila (columna "Tag"), fuera del formulario. */
 const LEAD_TAG = "[LP-SORTEO-BECAS-EC]";

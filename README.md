@@ -31,11 +31,16 @@ npm run deploy     # build + publica en gh-pages  (GitHub Pages ~1 min en actual
   marcas de registro, chevrons, cuatrifolio, círculo cian, puntos), foto de graduados
   y la **tarjeta de formulario** (`id="formulario"`).
 - `src/sections/Footer.tsx` — logo UniCPO, co-brand CPO Ecuador + FAINTER, copyright.
-- `src/components/ui/LeadForm.tsx` — campos: nombre, teléfono, correo, ¿odontólogo?
-- `src/lib/leadForm.ts` — **`GOOGLE_SCRIPT_URL`** apunta al Apps Script del cliente.
-  Cada dato se manda bajo varias claves (nombre/nombreCompleto/name, etc.) para caer
-  en la columna correcta sea cual sea el nombre del parámetro que espera el script.
-  Envío `no-cors` (la respuesta es opaca; la UI muestra éxito al disparar).
+- `src/components/ui/LeadForm.tsx` — campos: nombre, teléfono, correo, ¿odontólogo?,
+  ¿especialista? (+ área si es "Sí"), tiempo en odontología, perfil laboral,
+  ¿usa sistema de agenda?, facturación mensual. Los grupos de opciones usan el
+  helper `ChoiceGroup`.
+- `src/lib/leadForm.ts` — **`GOOGLE_SCRIPT_URL`** apunta al Apps Script de la planilla.
+  Las claves de `fields` tienen que coincidir con `FIELD_KEYS` de `apps-script/Code.gs`.
+  Envío `no-cors` (la respuesta es opaca; la UI muestra éxito al disparar). Si está
+  en `null`, el formulario NO envía nada (solo UI).
+- `apps-script/Code.gs` — script que se pega en la planilla (Extensiones ▸ Apps Script)
+  para recibir los registros. Instrucciones de implementación dentro del archivo.
 - `src/index.css` — paleta azul/cian (`@theme`) y fuente Poppins.
 
 ## Imágenes (`public/images/`)
@@ -51,8 +56,10 @@ Si una imagen falta, el elemento se oculta y queda el degradado — no rompe la 
 
 ## Pendiente / a revisar
 
-- **Probar el formulario:** hacer un registro de prueba y confirmar en qué columnas
-  cayó cada campo en la hoja. Ajustar `LEAD_TAG` o las claves en `src/lib/leadForm.ts`
-  si hace falta.
+- **Conectar la planilla nueva:** implementar `apps-script/Code.gs` en la hoja destino
+  y pegar la URL `/exec` en `GOOGLE_SCRIPT_URL` (`src/lib/leadForm.ts`). Mientras esté
+  en `null`, el formulario funciona pero no guarda nada.
+- **Probar el formulario:** hacer un registro de prueba y confirmar que la fila cae
+  completa en la hoja.
 - **Textos legales:** el enlace "Política de Privacidad" del footer apunta a `#`.
 - Fuente exacta y colores: aproximados a las artes; afinar si el cliente pasa la marca.

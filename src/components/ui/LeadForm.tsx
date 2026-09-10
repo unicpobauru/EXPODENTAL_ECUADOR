@@ -10,6 +10,62 @@ const inputClass =
   "w-full rounded-xl border border-white/15 bg-white/[0.06] px-4 py-3 text-[14px] text-white placeholder:text-white/35 outline-none transition-colors duration-200 focus:border-gold-400/60 focus:bg-white/[0.09]";
 const labelClass = "text-left text-[12.5px] font-semibold text-white/70";
 
+const SI_NO = ["Sí", "No"] as const;
+const TIEMPO_OPTS = [
+  "Hasta 2 años",
+  "De 3 a 5 años",
+  "De 6 a 10 años",
+  "Más de 10 años",
+] as const;
+const PERFIL_OPTS = [
+  "Tengo mi propio consultorio",
+  "Trabajo para terceros",
+  "Trabajo en el sector público",
+] as const;
+const FACTURACION_OPTS = [
+  "Hasta US$ 5.000 al mes",
+  "Entre US$ 5.000 y US$ 10.000 al mes",
+  "Entre US$ 10.000 y US$ 20.000 al mes",
+  "Más de US$ 20.000 al mes",
+] as const;
+
+/** Grupo de opciones tipo "elegí una" (botones). */
+function ChoiceGroup({
+  label,
+  options,
+  value,
+  onChange,
+  columns = 1,
+}: {
+  label: string;
+  options: readonly string[];
+  value: string;
+  onChange: (value: string) => void;
+  columns?: 1 | 2;
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className={labelClass}>{label}</span>
+      <div className={`grid gap-2 ${columns === 2 ? "grid-cols-2" : "grid-cols-1"}`}>
+        {options.map((option) => (
+          <button
+            key={option}
+            type="button"
+            onClick={() => onChange(option)}
+            className={`rounded-xl border px-4 py-2.5 text-[13px] font-semibold leading-snug transition-colors duration-200 ${
+              value === option
+                ? "border-gold-400 bg-gold-500 text-white"
+                : "border-white/15 bg-white/[0.06] text-white/70 hover:border-white/30"
+            }`}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function LeadForm() {
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
@@ -17,7 +73,13 @@ export function LeadForm() {
     () => countries.find((c) => c.code === DEFAULT_COUNTRY) ?? countries[0],
   );
   const [email, setEmail] = useState("");
-  const [medico, setMedico] = useState<"Sí" | "No" | "">("");
+  const [medico, setMedico] = useState("");
+  const [especialista, setEspecialista] = useState("");
+  const [area, setArea] = useState("");
+  const [tiempo, setTiempo] = useState("");
+  const [perfil, setPerfil] = useState("");
+  const [agenda, setAgenda] = useState("");
+  const [facturacion, setFacturacion] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
@@ -26,7 +88,17 @@ export function LeadForm() {
     e.preventDefault();
     setError(null);
 
-    if (!nome.trim() || !telefone.trim() || !email.trim() || !medico) {
+    if (
+      !nome.trim() ||
+      !telefone.trim() ||
+      !email.trim() ||
+      !medico ||
+      !especialista ||
+      !tiempo ||
+      !perfil ||
+      !agenda ||
+      !facturacion
+    ) {
       setError("Completá todos los campos para continuar.");
       return;
     }
@@ -34,15 +106,25 @@ export function LeadForm() {
       setError("Ingresá un correo electrónico válido.");
       return;
     }
+    if (especialista === "Sí" && !area.trim()) {
+      setError("Indicá en qué área sos especialista.");
+      return;
+    }
 
     setSubmitting(true);
     const data: LeadFormData = {
       nome: nome.trim(),
       // Formato "(+55) 11 9...": NO empieza con "+", así Google Sheets no lo
-      // interpreta como fórmula (eso causaba #ERROR! en la columna Telefone).
+      // interpreta como fórmula (eso causaba #ERROR! en la columna Telefono).
       telefone: `(+${country.dial}) ${telefone.trim()}`,
       email: email.trim(),
       medico,
+      especialista,
+      area: especialista === "Sí" ? area.trim() : "",
+      tiempo,
+      perfil,
+      agenda,
+      facturacion,
       pais: `${country.name} (+${country.dial})`,
     };
     logToGoogleSheet(data);
@@ -114,25 +196,67 @@ export function LeadForm() {
         />
       </div>
 
-      <div className="flex flex-col gap-1.5">
-        <span className={labelClass}>¿Sos odontólogo/a?</span>
-        <div className="grid grid-cols-2 gap-2">
-          {(["Sí", "No"] as const).map((option) => (
-            <button
-              key={option}
-              type="button"
-              onClick={() => setMedico(option)}
-              className={`rounded-xl border px-4 py-2.5 text-[13px] font-semibold uppercase tracking-[0.04em] transition-colors duration-200 ${
-                medico === option
-                  ? "border-gold-400 bg-gold-500 text-white"
-                  : "border-white/15 bg-white/[0.06] text-white/70 hover:border-white/30"
-              }`}
-            >
-              {option}
-            </button>
-          ))}
+      <ChoiceGroup
+        label="¿Sos odontólogo/a?"
+        options={SI_NO}
+        value={medico}
+        onChange={setMedico}
+        columns={2}
+      />
+
+      <ChoiceGroup
+        label="¿Ya eres especialista en alguna área de la odontología?"
+        options={SI_NO}
+        value={especialista}
+        onChange={setEspecialista}
+        columns={2}
+      />
+
+      {especialista === "Sí" && (
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass} htmlFor="lead-area">
+            Si respondiste sí, ¿en qué área?
+          </label>
+          <input
+            id="lead-area"
+            type="text"
+            value={area}
+            onChange={(e) => setArea(e.target.value)}
+            className={inputClass}
+            placeholder="Ej.: Ortodoncia, Implantología, Endodoncia..."
+          />
         </div>
-      </div>
+      )}
+
+      <ChoiceGroup
+        label="¿Cuánto tiempo llevas trabajando en odontología?"
+        options={TIEMPO_OPTS}
+        value={tiempo}
+        onChange={setTiempo}
+        columns={2}
+      />
+
+      <ChoiceGroup
+        label="Seleccioná la alternativa que mejor te representa:"
+        options={PERFIL_OPTS}
+        value={perfil}
+        onChange={setPerfil}
+      />
+
+      <ChoiceGroup
+        label="¿Ya utilizás algún sistema de gestión de agenda en tu clínica?"
+        options={SI_NO}
+        value={agenda}
+        onChange={setAgenda}
+        columns={2}
+      />
+
+      <ChoiceGroup
+        label="¿Cuál es el rango de facturación mensual de tu clínica?"
+        options={FACTURACION_OPTS}
+        value={facturacion}
+        onChange={setFacturacion}
+      />
 
       {error && <p className="text-[12.5px] font-medium text-red-300">{error}</p>}
 

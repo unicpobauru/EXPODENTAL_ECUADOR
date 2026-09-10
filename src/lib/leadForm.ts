@@ -3,25 +3,34 @@
  * Al enviar, hace un POST al Web App de Google Apps Script, que escribe
  * una fila en la Hoja de cálculo de Google.
  *
+ * El script que recibe estos datos está en `apps-script/Code.gs` (raíz del
+ * repo). Las claves de `fields` de abajo tienen que coincidir con las que
+ * ese script busca en `FIELD_KEYS`.
+ *
  * Si GOOGLE_SCRIPT_URL se pone en null, el formulario funciona en la
  * interfaz (muestra "registro recibido") pero NO envía datos a ningún lado.
  */
 
-/** URL de implementación ("Web app") del Google Apps Script del cliente. */
-export const GOOGLE_SCRIPT_URL: string | null =
-  "https://script.google.com/macros/s/AKfycbzElfLuW-ioK-GMspJ7FqMvtc4e3h5aQDa60hbYCCLzNPBSZwOEFmqcRae9SgD4vi0r5Q/exec";
+/**
+ * URL de implementación ("Web app", termina en `/exec`) del Apps Script de
+ * la planilla NUEVA del sorteo. Mientras esté en `null`, el formulario no
+ * envía nada — pegar aquí la URL cuando la implementación esté hecha.
+ *
+ * Planilla anterior (ya no se usa):
+ * "https://script.google.com/macros/s/AKfycbzElfLuW-ioK-GMspJ7FqMvtc4e3h5aQDa60hbYCCLzNPBSZwOEFmqcRae9SgD4vi0r5Q/exec"
+ */
+export const GOOGLE_SCRIPT_URL: string | null = null;
 
 /** Etiqueta fija que viaja en CADA fila (columna "Tag"), fuera del formulario. */
 const LEAD_TAG = "[LP-SORTEO-BECAS-EC]";
 
-/** Texto que va a la columna "Origem" de la planilla. */
+/** Texto que va a la columna "Origen" de la planilla. */
 const ORIGEN = "LP Sorteo Becas UniCPO";
 
 /**
  * Valor por defecto para la columna "País (DDI)".
- * El formulario no pide país (evento presencial en Ecuador), así que se
- * manda este valor fijo. Si en el futuro se agrega un selector de país,
- * pasar el valor elegido por `data.pais` y se usa ese en su lugar.
+ * El formulario no pide país como campo aparte (el DDI ya viene del
+ * selector de teléfono), así que se manda este valor si no llega otro.
  */
 const PAIS_DEFAULT = "Ecuador (+593)";
 
@@ -31,6 +40,18 @@ export interface LeadFormData {
   email: string;
   /** "Sí" | "No" — si la persona es odontóloga. */
   medico: string;
+  /** "Sí" | "No" — ¿ya es especialista en algún área de la odontología? */
+  especialista: string;
+  /** Área de especialidad (texto abierto). Vacío si `especialista` = "No". */
+  area?: string;
+  /** Tiempo trabajando en odontología (una de las 4 franjas). */
+  tiempo: string;
+  /** Perfil laboral (consultorio propio / terceros / sector público). */
+  perfil: string;
+  /** "Sí" | "No" — ¿usa algún sistema de gestión de agenda? */
+  agenda: string;
+  /** Rango de facturación mensual de la clínica. */
+  facturacion: string;
   /** Opcional — país / DDI. Si no viene, se usa PAIS_DEFAULT. */
   pais?: string;
 }
@@ -52,45 +73,35 @@ function formatFecha(date: Date): string {
   return `${get("day")}-${get("month")}-${get("year")} ${hour}:${get("minute")}:${get("second")}`;
 }
 
-/** Asigna `value` a TODAS las claves de `keys` dentro de `target`. */
-function put(target: Record<string, string>, keys: string[], value: string): void {
-  for (const k of keys) target[k] = value;
-}
-
 /**
  * Envía los datos a la Hoja de cálculo de Google.
  *
  * Va como `application/x-www-form-urlencoded` (no JSON): así los campos
  * caen en `e.parameter` del Apps Script. Ese Content-Type es
- * "CORS-safelisted", por lo que NO dispara preflight.
- *
- * Cada valor se manda bajo MUCHAS claves (portugués, español, camelCase y
- * el texto exacto del encabezado) para caer en la columna correcta sea
- * cual sea el nombre de parámetro que espera el script de la planilla.
+ * "CORS-safelisted", por lo que NO dispara preflight. La respuesta es
+ * opaca (`no-cors`) — la UI de éxito no depende de ella.
  */
 export function logToGoogleSheet(data: LeadFormData): void {
   if (!GOOGLE_SCRIPT_URL) return;
 
-  const fecha = formatFecha(new Date());
   const pais = data.pais && data.pais.trim() ? data.pais.trim() : PAIS_DEFAULT;
-  const fields: Record<string, string> = {};
 
-  // Nome
-  put(fields, ["nome", "Nome", "nomeCompleto", "nome_completo", "nombre", "Nombre", "nombreCompleto", "name", "fullName"], data.nome);
-  // Telefone / WhatsApp
-  put(fields, ["telefone", "Telefone", "celular", "whatsapp", "WhatsApp", "telefono", "Telefono", "phone", "tel"], data.telefone);
-  // País (DDI)
-  put(fields, ["pais", "Pais", "país", "País", "paisDDI", "País (DDI)", "pais_ddi", "ddi", "DDI", "codigoPais", "countryCode", "country"], pais);
-  // E-mail
-  put(fields, ["email", "Email", "e-mail", "E-mail", "correo", "mail"], data.email);
-  // É odontólogo
-  put(fields, ["odontologo", "Odontologo", "ehOdontologo", "eOdontologo", "É odontólogo", "esOdontologo", "dentista", "isDentist"], data.medico);
-  // Origem
-  put(fields, ["origem", "Origem", "origen", "Origen", "fonte", "source", "canal"], ORIGEN);
-  // Data/Hora
-  put(fields, ["data", "Data", "dataHora", "Data/Hora", "fecha", "Fecha", "fechaHora", "timestamp", "date"], fecha);
-  // Tag (fuera del formulario)
-  put(fields, ["tag", "Tag", "etiqueta"], LEAD_TAG);
+  const fields: Record<string, string> = {
+    fecha: formatFecha(new Date()),
+    nombre: data.nome,
+    telefono: data.telefone,
+    pais,
+    correo: data.email,
+    odontologo: data.medico,
+    especialista: data.especialista,
+    area: data.area?.trim() ?? "",
+    tiempo: data.tiempo,
+    perfil: data.perfil,
+    agenda: data.agenda,
+    facturacion: data.facturacion,
+    origen: ORIGEN,
+    tag: LEAD_TAG,
+  };
 
   fetch(GOOGLE_SCRIPT_URL, {
     method: "POST",
